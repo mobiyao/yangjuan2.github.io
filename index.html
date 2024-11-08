@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=, initial-scale=1.0">
+    <title>校园电子地图</title>
+    <!-- 1. 新建容器，存放地图 -->
+    <style>
+      html,
+      body,
+      #container{
+          width: 100%;
+          height: 100%;
+      }
+      #input-card{
+          position: fixed;
+          background-color: rgba(171, 219, 139, 0.493);
+          /*max-height: 20%; */
+          overflow-y: auto;
+          top: 10px;
+          right: 10px;
+          width: 150px;
+          height:150px;
+      }
+      #input-card .btn{
+          margin-right: 1.2rem;
+          width: 5rem;
+
+      }
+
+   </style>
+<script type="text/javascript">
+    window._AMapSecurityConfig = {
+      securityJsCode: "c3328883a2faed8fd6e3cee294aeab89",
+    };
+  </script>
+  <script src="https://webapi.amap.com/loader.js"></script>
+<script src="https://webapi.amap.com/maps?v=2.0&key=b4c343082254f0d80442f24a709a2b29&plugin=AMap.Driving,AMap.MoveAnimation"></script>
+</head>
+<body>
+    <!-- 创建容器 -->
+    <div id="container"></div> 
+    <!-- 判断API是否加载成功 -->
+     <!-- <script>
+        console.log(AMap)
+     </script> -->
+    <!-- 创建地图对象 --><div id="input-card">
+      <div class="input-card">
+        <div id="container"></div>
+        <div class="input-card">
+            <div id="container"></div>
+            <div id="input-card">
+                <h4>轨迹回放控制</h4>
+                <div class="input-item">
+                    <input type="button" class="btn" value="开始动画" id="start" onclick="startAnimation()"/>
+                    <input type="button" class="btn" value="暂停动画" id="pause" onclick="pauseAnimation()"/>
+                </div>
+                <div class="input-item">
+                    <input type="button" class="btn" value="继续动画" id="resume" onclick="resumeAnimation()"/>
+                    <input type="button" class="btn" value="停止动画" id="stop" onclick="stopAnimation()"/>
+                </div>         
+          </div>
+      </div>
+    <script>
+         const map = new AMap.Map('container',{
+           center:[102.4231, 25.0211],  //地图中心点(昆明)
+           zoom: 13,//地图级别
+           viewMode: '3D',        
+       })
+       </script>
+       <script>
+    AMap.plugin(['AMap.ToolBar','AMap.Scale','AMap.ControlBar','AMap.Geolocation','AMap.HawkEye'],function(){ //添加多个控件，需要设定一个控件名称的数组
+  var toolbar = new AMap.ToolBar(//缩放工具条实例化
+  {position:{
+    right:'10px',
+    bottom:'10px'
+  }});
+  var scale = new AMap.Scale(//比例尺
+    {position:{
+    right:'10px',
+    bottom:'100px'
+  }}); 
+  var controlbar = new AMap.ControlBar(//添加控件
+    {position:{
+    right:'10px',
+    bottom:'160px'
+  }});
+  var geolocation = new AMap.Geolocation(
+    {position:{
+    right:'10px',
+    bottom:'280px'
+  }}); 
+  var hawkeye = new AMap.HawkEye(//缩放工具条实例化
+  {position:{
+    right:'10px',
+    bottom:'380px'
+  }});
+  map.addControl(toolbar); //添加控件
+  map.addControl(scale); //添加比例尺控件
+  map.addControl(controlbar); //工具条方向控件
+  map.addControl(geolocation); 
+  map.addControl(hawkeye);
+});
+          marker = new AMap.Marker({
+            map: map,
+            position: [102.756443,25.059657],
+            icon:new AMap.Icon({image:'https://a.amap.com/jsapi_demos/static/demo-center-v2/car.png',imageSize:[30,45]}),
+            offset: new AMap.Pixel(0,0),
+        });
+
+        var lineArr =[];
+        AMap.plugin(["AMap.Driving"], function () {
+        var driving = new AMap.Driving({
+          map:map,
+          policy:0, 
+        });
+        var startLngLat = [102.756443,25.059657]; //二号门
+        var endLngLat = [102.752439,25.057823]; //一号门
+        var opts ={waypoints:[
+            [102.75824,25.059778],//至真楼
+            [102.75768310, 25.06142829],//图书馆北馆
+            [102.75917441, 25.06202600],//一食堂
+            [102.762192,25.058564],//四食堂
+            [102.759212,25.056719],//秋海
+            [102.757415,25.056568]//茶叶博物馆
+            ],} //途径点        
+
+//图书馆北馆
+const position = new AMap.LngLat(102.758766,25.060177); //Marker 经纬度
+      const icon= new AMap.Icon({image:'图书馆.jpg',imageSize:[60,60]})
+      const marker = new AMap.Marker({
+      position: position,
+      icon:icon
+});
+   map.add(marker)
+  var text =new AMap.Text({
+  position:new AMap.LngLat(102.75768310, 25.06142829),
+  anchor:'top-right',
+  text: '图书馆北馆',
+  style:{'background-color':'g#C0C0C0'},
+});
+map.add(text);
+//一食堂
+const position1 = new AMap.LngLat(102.75917441, 25.06202600); //Marker 经纬度
+    const icon1= new AMap.Icon({image:'一食堂.webp',imageSize:[60,60]});
+    const marker1= new AMap.Marker({
+    position: position1,
+    icon:icon1
+});
+map.add(marker1)
+var text =new AMap.Text({
+  position:new AMap.LngLat(102.75917441, 25.06202600),
+  anchor:'top-right',
+  text: '一食堂',
+  style:{'background-color':'g#C0C0C0'},
+});
+map.add(text);
+//四食堂
+const position2 = new AMap.LngLat(102.762192,25.058564); //Marker 经纬度
+    const icon2= new AMap.Icon({image:'四食堂.jpg',imageSize:[70,70]});
+    const marker2= new AMap.Marker({
+    position: position2,
+    icon:icon2
+});
+map.add(marker2)
+map.add(marker1)
+var text =new AMap.Text({
+  position:new AMap.LngLat(102.762192,25.058564),
+  anchor:'top-right',
+  text: '四食堂',
+  style:{'background-color':'g#C0C0C0'},
+});
+map.add(text);
+//至真楼
+const position3 = new AMap.LngLat(102.75887534, 25.06041511); //Marker 经纬度
+    const icon3= new AMap.Icon({image:'至真楼.jpg',imageSize:[70,70]});
+    const marker3= new AMap.Marker({
+    position: position3,
+    icon:icon3
+});
+map.add(marker3)
+var text =new AMap.Text({
+  position:new AMap.LngLat(102.75887534, 25.06041511),
+  anchor:'top-right',
+  text: '至真楼',
+  style:{'background-color':'g#C0C0C0'},
+});
+map.add(text);
+//秋海
+const position4 = new AMap.LngLat(102.759212,25.056719); //Marker 经纬度
+    const icon4= new AMap.Icon({image:'秋海.jpg',imageSize:[70,70]});
+    const marker4= new AMap.Marker({
+    position: position4,
+    icon:icon4
+});
+map.add(marker4)
+var text =new AMap.Text({
+  position:new AMap.LngLat(102.759212,25.056719),
+  anchor:'top-right',
+  text: '秋海',
+  style:{'background-color':'g#C0C0C0'},
+});
+map.add(text);
+//茶叶博物馆
+const position5 = new AMap.LngLat(102.757415,25.056568); //Marker 经纬度
+    const icon5= new AMap.Icon({image:'茶叶博物馆.png',imageSize:[70,70]});
+    const marker5= new AMap.Marker({
+    position: position5,
+    icon:icon5
+});
+map.add(marker4)
+var text =new AMap.Text({
+  position:new AMap.LngLat(102.757415,25.056568),
+  anchor:'top-right',
+  text: '茶叶博物馆',
+  style:{'background-color':'g#C0C0C0'},
+});
+map.add(text);
+
+
+driving.search(startLngLat, endLngLat, opts, function (status, result) {
+        console.log(status);
+        console.log(startLngLat);
+        result.routes[0].steps.forEach(function(item){
+        lineArr.push(...item.path)
+        });
+        });
+        
+        });
+      function startAnimation(){
+          marker.moveAlong(lineArr,{duration:200,})};  
+           // 绘制轨迹
+        var polyline = new AMap.Polyline({
+            map: map,
+            path: lineArr,
+            showDir:true,
+            strokeColor: "#28F",  //线颜色
+            // strokeOpacity: 1,     //线透明度
+            strokeWeight: 6,      //线宽
+            // strokeStyle: "solid"  //线样式
+        });
+
+        var passedPolyline = new AMap.Polyline({
+            map: map,
+            strokeColor: "#AF5",  //线颜色
+            strokeWeight: 6,      //线宽
+        });
+
+
+        marker.on('moving', function (e) {
+            passedPolyline.setPath(e.passedPath);
+            map.setCenter(e.target.getPosition(),true)
+        });
+
+        map.setFitView();
+
+        window.startAnimation = function startAnimation () {
+            marker.moveAlong(lineArr, {
+                // 每一段的时长
+                duration: 500,//可根据实际采集时间间隔设置
+                // JSAPI2.0 是否延道路自动设置角度在 moveAlong 里设置
+                autoRotation: true,
+            });
+        };
+
+        window.pauseAnimation = function () {
+            marker.pauseMove();
+        };
+
+        window.resumeAnimation = function () {
+            marker.resumeMove();
+        };
+
+        window.stopAnimation = function () {
+            marker.stopMove();
+        };
+    
+    </script>
+</body>
+</html>
